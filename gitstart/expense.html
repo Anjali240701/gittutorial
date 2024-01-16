@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body style="margin: 0">
+    <form onsubmit="handleFormSubmit(event)">
+      <label for="amount">Choose expenseamount:</label>
+      <input type="number" name="amount" id="amount" />
+      <label for="description">Choose description:</label>
+      <input type="text" name="description" id="describe" />
+      <label for="category">Choose a category:</label>
+      <select name="category" id="choosecat">
+      <option value="movie">Movie</option>
+     <option value="Grocery">Grocery</option>
+     <option value="fuel">Fuel</option>
+     <option value="clothing">clothing&accessories</option>
+      </select>
+
+      <button type="submit">Add Expenses</button>
+    </form>
+    <ul id='listofitems'></ul>
+  </body>
+  <script >
+
+function handleFormSubmit(event){
+  event.preventDefault();
+  const amount=event.target.amount.value;
+   const description=event.target.description.value;
+   const category=event.target.category.value;
+  const obj={
+    amount,
+    description,
+    category
+  }
+
+  localStorage.setItem(obj.category,JSON.stringify(obj));
+
+  showuserdetails(obj);
+}
+function showuserdetails(obj){
+  const parentElem=document.getElementById('listofitems');
+  const childElem=document.createElement('li');
+ childElem.textContent=obj.amount+ '-' +obj.description+ '-' +obj.category
+ const deletebutton=document.createElement('input');
+  deletebutton.type='button';
+  deletebutton.value='Delete';
+  deletebutton.onclick=()=>{
+    localStorage.removeItem(obj.category);
+    parentElem.removeChild(childElem);
+  }
+  const editbutton=document.createElement('input');
+  editbutton.type='button';
+  editbutton.value='Edit';
+  editbutton.onclick=()=>{
+    localStorage.removeItem(obj.category);
+    parentElem.removeChild(childElem);
+    document.getElementById('amountInputTag').value=obj.amount;
+    document.getElementById('descriptionInputTag').value=obj.description;
+    document.getElementById('categoryInputTag').value=obj.category;
+    
+  }
+
+
+  childElem.appendChild(deletebutton);
+   childElem.appendChild(editbutton);
+  parentElem.appendChild(childElem);
+}
+//module.exports=handleFormSubmit;
+</script>
+</html>
