@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body style="margin: 0">
+    <form onsubmit="handleFormSubmit(event)">
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" />
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" />
+      <label for="phone">Phone No</label>
+      <input type="tel" name="phone" id="phone" />
+      <button type="submit">Submit</button>
+    </form>
+    <ul id="listofitems"></ul>
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.5/axios.min.js"></script>
+  <script>
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const username = event.target.username.value;
+      const email = event.target.email.value;
+      const phone = event.target.phone.value;
+      const obj = {
+        username,
+        email,
+        phone,
+      };
+
+      // localStorage.setItem(obj.email, JSON.stringify(obj));
+      axios.post("https://crudcrud.com/api/16cf5185d175402cbddc8dc20524124c/appointmentdata",obj)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // showuserdetails(obj);
+    }
+    window.addEventListener("DOMContentLoaded", () => {
+      axios.get("https://crudcrud.com/api/16cf5185d175402cbddc8dc20524124c/appointmentdata")
+      .then((response)=>{
+        console.log(response);
+        for(var i=0;i<response.data.length;i++){
+            showuserdetails(response.data[i]);
+        }
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
+    });
+
+    function showuserdetails(obj) {
+      const parentElem = document.getElementById("listofitems");
+      const childElem = document.createElement("li");
+      childElem.textContent = obj.username + "-" + obj.email + "-" + obj.phone;
+      const deletebutton = document.createElement("input");
+      deletebutton.type = "button";
+      deletebutton.value = "Delete";
+      deletebutton.onclick = () => {
+       localStorage.removeItem(obj.email);
+        parentElem.removeChild(childElem);
+      };
+      const editbutton = document.createElement("input");
+      editbutton.type = "button";
+      
+      editbutton.value = "Edit";
+      editbutton.onclick = () => {
+       localStorage.removeItem(obj.email);
+        parentElem.removeChild(childElem);
+        document.getElementById("usernameInputTag").value = obj.username;
+        document.getElementById("emailInputTag").value = obj.email;
+        document.getElementById("phoneInputTag").value = obj.phone;
+      };
+
+      childElem.appendChild(deletebutton);
+      childElem.appendChild(editbutton);
+      parentElem.appendChild(childElem);
+    }
+    //module.exports=handleFormSubmit;
+  </script>
+</html>
